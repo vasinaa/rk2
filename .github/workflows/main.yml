@@ -1,0 +1,52 @@
+name: test_rk2
+on:
+  push:
+  
+jobs:
+  Build:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: build bubble_sort
+          shell: bash
+          run: |
+            git submodule update --init
+            cd QuickSort   
+            cmake -H. -B_build
+            cmake --build _build
+          
+  CovTest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: update
+        run:  |
+          git submodule update --init
+          sudo apt install lcov
+          sudo apt install g++-7
+      
+      - name: test
+        shell: bash
+        run: |
+          mkdir _build && cd _build
+          CXX=/usr/bin/g++-7 cmake -DCOVERAGE=1 ..
+          cmake --build .
+          ./RunTest
+          lcov -t "bubble_sort" -o lcov.info -c -d .
+          lcov --remove lcov.info '/home/runner/work/rk2/rk2/third-party/gtest/*' -o lcov.info ###
+          lcov --remove lcov.info '/usr/include/*' -o lcov.info
+          
+      - name: CovBeg
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ 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 }}
+          parallel: true
+          path-to-lcov: ./_build/lcov.info
+          coveralls-endpoint: https://coveralls.io
+          
+      - name: CovFin
+        uses: coverallsapp/github-action@master
+        with:
+         github-token: ${{ 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 }}
+         parallel-finished: true
