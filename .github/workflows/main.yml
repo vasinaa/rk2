@@ -40,7 +40,7 @@ jobs:
       - name: CovBeg
         uses: coverallsapp/github-action@master
         with:
-          github-token: ${{ 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 }}
+          github-token: ${{ secrets.github_token }}
           parallel: true
           path-to-lcov: ./_build/lcov.info
           coveralls-endpoint: https://coveralls.io
@@ -48,5 +48,5 @@ jobs:
       - name: CovFin
         uses: coverallsapp/github-action@master
         with:
-         github-token: ${{ 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 }}
+         github-token: ${{ secrets.github_token }}
          parallel-finished: true
